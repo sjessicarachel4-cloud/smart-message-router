@@ -1,130 +1,249 @@
-# HackerRank Orchestrate
+# Smart Message Router
 
-Starter repository for the **HackerRank Orchestrate** 24-hour hackathon.
+An intelligent message routing system that analyzes messages using text, image, and voice information to decide the appropriate action, detect critical events, improve personalization, and ensure safe communication.
 
-## Message Notification Router
+## Overview
 
-Build an AI-powered system for WhatsApp that decides which messages deserve immediate attention, which should wait, and which should be muted.
+Smart Message Router is a multimodal message analysis pipeline designed to understand incoming messages and make intelligent routing decisions.
 
-The system must reason over multimodal messages, including text messages, image posters/screenshots, and voice notes.
+The system processes different message types, extracts important information, evaluates safety risks, detects urgent events, considers user behavior, and generates a final routing decision.
 
-WhatsApp is noisy. A user can receive family chats, society notices, school updates, co-worker messages, business account promotions, image posters, voice notes, and scams in the same message stream. Treating every message the same creates two bad outcomes: important messages get missed, and unwanted or risky messages interrupt the user.
+## Key Features
 
-Read [`problem_statement.md`](./problem_statement.md) for the full task spec, input/output schema, allowed values, and submission format.
+* Multimodal message processing
+
+  * Text analysis
+  * Image analysis
+  * Voice analysis
+
+* Intelligent decision making
+
+  * Determines message priority
+  * Classifies message type
+  * Generates routing actions
+
+* Safety analysis
+
+  * Detects suspicious or unsafe content
+  * Handles unknown senders and risky messages
+
+* Critical event detection
+
+  * Identifies urgent situations
+  * Extracts important event signals
+
+* Personalization
+
+  * Uses user behavior and context
+  * Improves message handling based on user information
+
+* Evaluation system
+
+  * Generates output results
+  * Evaluates pipeline performance
 
 ---
 
-## Repository Layout
+# Project Structure
 
-```text
-.
-├── AGENTS.md                         # Rules for AI coding tools + transcript logging
-├── problem_statement.md              # Full challenge statement
-├── README.md                         # You are here
-└── dataset/
-    ├── messages.csv                  # Messages to route
-    ├── output.csv                    # Blank submission template
-    ├── sample_messages.csv           # Solved examples
-    ├── users.csv                     # User notification behavior
-    ├── groups.csv                    # Group metadata
-    ├── group_members.csv             # User-group relationships
-    ├── business_accounts.csv         # Business sender metadata
-    ├── user_business_history.csv     # User-business history
-    ├── message_history.csv           # Historical messages
-    ├── message_events.csv            # User reactions to historical messages
-    ├── images.csv                    # Image IDs and media file paths
-    ├── voice_notes.csv               # Voice note IDs and media file paths
-    ├── daily_notification_summary.csv
-    └── media/
-        ├── images/
-        └── audio/
+```
+smart-message-router/
+
+├── code/
+│   └── app/
+│       ├── main.py
+│       │
+│       ├── data/
+│       │   └── loader.py
+│       │
+│       ├── decision/
+│       │   └── decision_engine.py
+│       │
+│       ├── evaluation/
+│       │   └── evaluator.py
+│       │
+│       ├── events/
+│       │   └── critical_event_detector.py
+│       │
+│       ├── multimodal/
+│       │   ├── text_processor.py
+│       │   ├── image_processor.py
+│       │   ├── voice_processor.py
+│       │   └── message_representation.py
+│       │
+│       ├── personalization/
+│       │   └── personalization_engine.py
+│       │
+│       └── safety/
+│           └── safety_engine.py
+│
+├── dataset/
+│   └── output.csv
+│
+└── docs/
+    └── implementation_plan.md
 ```
 
 ---
 
-## What You Need to Build
+# Module Description
 
-For every row in `dataset/messages.csv`, produce one row in `output.csv` with:
+## Main Pipeline
 
-| Column | Meaning |
-|---|---|
-| `message_id` | Incoming message ID |
-| `action` | One of `notify`, `digest`, or `mute` |
-| `message_type` | Best-fit message category |
-| `reason` | Short human-readable explanation |
-| `confidence` | Number from `0` to `1` |
-| `evidence_message_ids` | Historical message IDs used as evidence; write `none` if there is no useful evidence |
+### `code/app/main.py`
 
-Your system should make personalized decisions using the provided message, user, group, business, media, and historical interaction data.
-For image and voice-note messages, `images.csv` and `voice_notes.csv` only provide file paths; your system should inspect the media files themselves.
+The entry point of the application.
 
----
+It coordinates the complete workflow:
 
-## Suggested Workflow
-
-1. Inspect `dataset/sample_messages.csv` to understand the expected output format.
-2. Load `dataset/messages.csv` and all relevant context files.
-3. Build your routing system using any approach: LLMs, retrieval, rules, classifiers, agents, or hybrids.
-4. Write predictions to `output.csv`.
-5. Evaluate your approach on the solved sample rows before submitting.
-
-You may use any language or runtime. Python, JavaScript, and TypeScript are all reasonable choices.
+1. Loading datasets
+2. Creating message representations
+3. Performing safety analysis
+4. Detecting critical events
+5. Applying personalization
+6. Making final routing decisions
+7. Generating output.csv
 
 ---
 
-## Requirements
+## Data Processing
 
-Your solution must:
+### `data/loader.py`
 
-- be runnable from the terminal
-- read the provided files from `dataset/`
-- produce a valid `output.csv`
-- include one prediction for every `message_id` in `dataset/messages.csv`
-- not use organizer-only files or hardcoded labels
+Responsible for loading message data and supporting datasets required by the pipeline.
 
-If you use API keys or secrets, read them from environment variables. Never hardcode secrets in the repo.
+---
+
+## Multimodal Processing
+
+### `multimodal/text_processor.py`
+
+Analyzes message text and extracts:
+
+* Topics
+* Requests
+* Urgency signals
+* Important keywords
+
+### `multimodal/image_processor.py`
+
+Processes image-based messages and extracts visual information.
+
+### `multimodal/voice_processor.py`
+
+Analyzes voice-related information and detects:
+
+* Voice event signals
+* Warning terms
+* Important patterns
+
+### `multimodal/message_representation.py`
+
+Creates a unified representation by combining:
+
+* Text features
+* Image features
+* Voice features
+
+---
+
+## Decision Engine
+
+### `decision/decision_engine.py`
+
+Makes the final routing decision based on:
+
+* Message features
+* Safety results
+* Event detection
+* Personalization results
+
+---
+
+## Safety Module
+
+### `safety/safety_engine.py`
+
+Evaluates possible risks and suspicious activities.
+
+---
+
+## Critical Event Detection
+
+### `events/critical_event_detector.py`
+
+Identifies urgent situations requiring special handling.
+
+---
+
+## Personalization
+
+### `personalization/personalization_engine.py`
+
+Uses user context and previous behavior to improve routing decisions.
 
 ---
 
 ## Evaluation
 
-Your `output.csv` will be compared against hidden ground-truth labels.
+### `evaluation/evaluator.py`
 
-The scoring will consider:
-
-- correctness of `action`
-- correctness of `message_type`
-- usefulness and consistency of `reason`
-- whether `evidence_message_ids` point to relevant historical messages
-- reasonable confidence calibration
-
-Strong systems will combine retrieval, structured metadata, behavioral history, safety checks, OCR/ASR handling, and contextual reasoning.
+Creates and manages the final output generated by the pipeline.
 
 ---
 
-## Chat Transcript Logging
+# How To Run
 
-This repo includes an [`AGENTS.md`](./AGENTS.md) file for AI coding tools. It asks compatible tools to append conversation summaries to:
+Install required dependencies:
 
-| Platform | Path |
-|---|---|
-| macOS / Linux | `$HOME/hackerrank_orchestrate_august26/log.txt` |
-| Windows | `%USERPROFILE%\hackerrank_orchestrate_august26\log.txt` |
+```
+pip install -r requirements.txt
+```
 
-Upload this log as your chat transcript at submission time. Do not paste secrets into the chat.
+Run the application:
+
+```
+python -m code.app.main
+```
+
+The generated results will be stored in:
+
+```
+dataset/output.csv
+```
 
 ---
 
-## Submission
+# Output
 
-Submit the following files as instructed by HackerRank:
+The system produces routing decisions containing:
 
-1. **Code zip**: full runnable solution, prompts/configs, README, and any evaluation files.
-2. **Predictions CSV**: final `output.csv` for all rows in `dataset/messages.csv`.
-3. **Chat transcript**: the `log.txt` described above.
+* Message ID
+* Selected action
+* Message type
+* Reason
+* Confidence score
+* Evidence message IDs
 
-Before submitting, confirm:
+Example:
 
-- `output.csv` has one row per row in `dataset/messages.csv`.
-- `output.csv` has the exact required columns in the exact required order.
-- Your runnable code and setup instructions are included in `code.zip`.
+```
+message_id
+action
+message_type
+reason
+confidence
+evidence_message_ids
+```
+
+---
+
+# Future Improvements
+
+* Integrate real machine learning models
+* Add deep learning based image and voice understanding
+* Improve recommendation accuracy
+* Add real-time message streaming
+* Deploy as an API service
+
+---
